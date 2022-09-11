@@ -1,0 +1,21 @@
+type KeyConfig {
+  key: String
+  value: String
+}
+type KeyConfigList {
+  amount: Int!
+  elements: [KeyConfig]!
+}
+
+extend type Query {
+  # Get key value
+  getKeyValue(key: String!): KeyConfig
+  
+  # Get key list
+  getKeyList: KeyConfigList!
+}   
+
+extend type Mutation {
+  # Set new key or update if exist
+  setKey(key: String!, value:String!): KeyConfig!
+}
