@@ -25,8 +25,8 @@ const app = new Koa();
 // Create a router
 const router = new KoaRouter();
 
-// Create Apollo Server
-const apolloServer = createApolloServer();
+// Create Apollo Server & Routes
+createApolloServer(router);
 
 // Expose alive route
 router.get("/alive", (ctx: Context) => { ctx.body = { success: true }; });
@@ -39,10 +39,6 @@ router.get("/config", (ctx: Context) => {
 
 // REST routes
 app.use(configRoutes().routes());
-
-// Graphql routes
-router.get("/graphql", apolloServer.getMiddleware());
-router.post("/graphql", apolloServer.getMiddleware());
 
 // Apply middlewares
 app.use(router.routes());

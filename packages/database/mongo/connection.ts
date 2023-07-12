@@ -3,9 +3,9 @@ import { ConfigEntity } from "./entity/ConfigEntity";
 
 export const mongoConnection = new DataSource({
     type: "mongodb",
-    host: "localhost",
-    port: 27017,
-    database: "development_dlb",
+    host: process.env.VAR_HOST_GRAPHQL,
+    port: process.env.VAR_PORT_GRAPHQL ? parseInt(process.env.VAR_PORT_GRAPHQL) : 27017,
+    database: process.env.VAR_DATABASE_GRAPHQL,
     useUnifiedTopology: true,
     cache: false,
     entities: [

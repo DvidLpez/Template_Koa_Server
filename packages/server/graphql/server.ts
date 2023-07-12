@@ -1,4 +1,6 @@
 import { ApolloServer, gql } from "apollo-server-koa";
+import { ApolloServerPluginLandingPageGraphQLPlayground,
+    ApolloServerPluginLandingPageDisabled, ApolloServerPluginCacheControl  } from 'apollo-server-core';
 import { readdirSync, readFileSync } from "fs";
 import { join as pathJoin } from "path";
 import AppQueries from "./resolvers/AppQueries";
@@ -15,9 +17,9 @@ const schema = schemaFiles
     .map(file => readFileSync(pathJoin(__dirname, `schema/${file}`)).toString())
     .join();
 
-export const createApolloServer = () => {
+export const createApolloServer = async(router: any) => {
     // Create Apollo Server
-    return new ApolloServer({
+    const graphqlServer = new ApolloServer({
         typeDefs: gql(`
             type Query
             type Mutation
@@ -27,15 +29,15 @@ export const createApolloServer = () => {
             }
             ${schema}
         `),
-        playground: {
-            settings: {
-                // Avoid CORS errors for GraphQL UI
-                'request.credentials': ''
-            }
-        },
-        cacheControl: {
-            defaultMaxAge: 0,
-        },
+        plugins: [
+            process.env.NODE_ENV === 'production'
+              ? ApolloServerPluginLandingPageDisabled()
+              : ApolloServerPluginLandingPageGraphQLPlayground(),
+            
+            ApolloServerPluginCacheControl({
+                defaultMaxAge: 0
+              }),
+        ],
         resolvers: {
             Query: AppQueries.Query,
             Mutation: AppMutations.Mutation
@@ -49,4 +51,9 @@ export const createApolloServer = () => {
             return error;
         }
     });
+
+    await graphqlServer.start();
+
+    router.get("/graphql", graphqlServer.getMiddleware());
+    router.post("/graphql", graphqlServer.getMiddleware());
 }
