@@ -4,9 +4,9 @@
   "description": "Koa server with Graphql and REST endpoints",
   "main": "index.js",
   "scripts": {
-    "start": "node build/server.js",
+    "start": "node build/server/koa/server.js",
     "dev": "nodemon --watch 'packages/**/*.ts' --ignore 'packages/**/*.spec.ts' --exec ts-node packages/server/koa/server.ts",
-    "build": "npx tsc --skipLibCheck"
+    "build": "npx tsc --skipLibCheck && copyfiles --up 2 packages/server/graphql/schema/app.graphql build/server"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +29,7 @@
     "apollo-boost": "^0.4.9",
     "apollo-datasource-rest": "^3.5.2",
     "apollo-server-koa": "^3.12.0",
+    "copyfiles": "^2.4.1",
     "graphql": "^15.8.0",
     "koa": "^2.14.2",
     "koa-bodyparser": "^4.4.1",
