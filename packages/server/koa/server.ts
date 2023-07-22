@@ -1,23 +1,15 @@
-import dotenv from "dotenv";
 import Koa, { Context } from "koa";
 import KoaRouter from "koa-router";
 import { createApolloServer } from "../graphql/server"
-import { initializeDataBase, initializeJWT } from '../utils/utils';
-import { mongoConnection, mysqlConnection } from '../../database';
+import { initializeJWT, setEnvironmentVariables } from '../utils';
+import { initializeDataBase, mongoConnection, mysqlConnection } from '../../database';
 import { configRoutes } from "./routes/configRouter";
-// import 'isomorphic-fetch';
-// import CronJob from '../cronjob';
 
-switch(process.env.VAR_NODE_ENV) {
-  case 'production':
-    console.log('Production environment with file .env.production');
-      dotenv.config({ path: '.env.production' });
-      break;
-  default:
-      console.log('Default environment with file .env.development');
-      dotenv.config({ path: '.env.development' });
-      break;
-}
+// Config .env files
+setEnvironmentVariables();
+process.env.VAR_NODE_ENV == "production" 
+  ? console.log('Production environment with file .env.production')
+  : console.log('Default environment with file .env.development');
 
 // Create Koa server application
 const app = new Koa();
@@ -44,15 +36,15 @@ app.use(configRoutes().routes());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-// Initialize DataSources
+// Initialize database
 initializeDataBase(mongoConnection);
 
 // Init JWT tokens for REST endpoints features
-initializeJWT(['TEST_CUSTOMER']);
+initializeJWT(['Company1', 'Company2']);
 
 // Listen to webserver port
-const port = process.env.VAR_PORT || 3000;
+const port = process.env.VAR_PORT || 4000;
 app.proxy = true;
 app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
+    console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });

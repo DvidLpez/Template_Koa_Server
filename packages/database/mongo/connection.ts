@@ -1,14 +1,17 @@
+import { setEnvironmentVariables } from "../../server/utils";
 import { DataSource } from "typeorm";
-import { ConfigEntity } from "./entity/ConfigEntity";
 
-export const mongoConnection = new DataSource({
+setEnvironmentVariables()
+
+export const mongoConnection =  new DataSource({
     type: "mongodb",
-    host: process.env.VAR_HOST_GRAPHQL,
-    port: process.env.VAR_PORT_GRAPHQL ? parseInt(process.env.VAR_PORT_GRAPHQL) : 27017,
-    database: process.env.VAR_DATABASE_GRAPHQL,
+    authSource: process.env.VAR_SOURCE_MONGO,
+    host: process.env.VAR_HOST_MONGO,
+    port: process.env.VAR_PORT_MONGO ? parseInt(process.env.VAR_PORT_MONGO) : 27017,
+    database: process.env.VAR_DATABASE_MONGO,
+    username: process.env.VAR_USER_MONGO,
+    password: process.env.VAR_PASS_MONGO,
     useUnifiedTopology: true,
     cache: false,
-    entities: [
-        ConfigEntity
-    ]
-})
+    entities: ["packages/database/mongo/entities/*.ts"]
+})    

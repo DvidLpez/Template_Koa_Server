@@ -1,5 +1,5 @@
 {
-  "name": "mern",
+  "name": "template_koa_server",
   "version": "1.0.0",
   "description": "Koa server with Graphql and REST endpoints",
   "main": "index.js",

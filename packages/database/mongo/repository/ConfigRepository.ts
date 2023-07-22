@@ -1,6 +1,6 @@
 import { MongoRepository } from "typeorm";
 import { mongoConnection } from "../connection";
-import { ConfigEntity } from "../entity/ConfigEntity";
+import { ConfigEntity } from "../entities/ConfigEntity";
 
 export default class ConfigRepository {
     private repository: MongoRepository<ConfigEntity>;
