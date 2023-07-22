@@ -1,10 +1,11 @@
-import { ApolloServer, gql } from "apollo-server-koa";
+import { ApolloServer, AuthenticationError, gql, ValidationError } from "apollo-server-koa";
 import { ApolloServerPluginLandingPageGraphQLPlayground,
     ApolloServerPluginLandingPageDisabled, ApolloServerPluginCacheControl  } from 'apollo-server-core';
 import { readdirSync, readFileSync } from "fs";
 import { join as pathJoin } from "path";
 import AppQueries from "./resolvers/AppQueries";
 import AppMutations from "./resolvers/AppMutations";
+import { checkJWT } from "../utils";
 
 
 // Fetch all schema definition files
@@ -43,7 +44,20 @@ export const createApolloServer = async(router: any) => {
             Mutation: AppMutations.Mutation
         },
         context: async ({ ctx }: any) => {
-            return console.log( "Waiting query or mutation...");
+            // get the user token from the headers
+            const token = ctx.headers.authorization || '';
+
+            if (!token) 
+                throw new AuthenticationError('you must be logged in');
+
+            // try to retrieve a user with the token
+            try{
+                let user = await checkJWT(token.split(' ')[1]);
+                console.log(user);
+
+            }catch(err: any){
+                throw new ValidationError(err.message);
+            }
         },
         formatError: (error: Error) => {
             console.log(JSON.stringify({ message: error.message, name: error.name }));

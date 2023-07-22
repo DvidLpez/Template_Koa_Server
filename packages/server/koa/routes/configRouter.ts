@@ -1,5 +1,5 @@
 import KoaRouter from "koa-router";
-import { Context } from 'koa';
+import { Context, Next, ParameterizedContext } from 'koa';
 import bodyParser from "koa-bodyparser";
 import jwt from "koa-jwt";
 import ConfigRepository from "../../../database/mongo/repository/ConfigRepository";
@@ -57,8 +57,26 @@ const getRequestParams = (body: any) => {
     }
 }
 
+const handling401 = async (ctx: ParameterizedContext<any, KoaRouter.IRouterParamContext<any, {}>, any>, next: Next) => {
+    return next().catch((err) => {
+        if (err.status === 401) {
+            ctx.status = 401;
+            let errMessage = err.originalError ?
+            err.originalError.message :
+            err.message
+            ctx.body = {
+            error: errMessage
+            };
+            ctx.set("X-Status-Reason", errMessage)
+        } else {
+            throw err;
+        }
+        });
+}
+
 export const configRoutes = () => {
     const configRouter: KoaRouter = new KoaRouter();
+    configRouter.use(handling401);
     configRouter.use(jwt({ secret: process.env.SEC_REST_SECRET || "" }));
     configRouter.use(bodyParser())
     configRouter.post("/key", setNewOrUpdateKeyValue);
