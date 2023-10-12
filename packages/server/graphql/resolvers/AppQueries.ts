@@ -1,4 +1,4 @@
-import ConfigRepository from "../../../database/mongo/repository/ConfigRepository";
+import { ConfigRepository } from "../../../database/mongo/repository";
 
 export default {
     Query: {

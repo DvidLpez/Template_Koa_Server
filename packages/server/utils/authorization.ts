@@ -1,41 +1,52 @@
-import jwtToken from 'jsonwebtoken';
-import { setEnvironmentVariables } from './environment';
+import jwt from 'jsonwebtoken';
+import { UserEntity } from '../../database/mongo/entities';
 
-setEnvironmentVariables();
-
-const secret = process.env.SEC_REST_SECRET ?? "";
-const expireTime = '1h';
-
-
-export const signJWT = (payload: any) : string => {
-    return jwtToken.sign(
-        {user: payload},
-        secret,
-        { expiresIn: expireTime }
+export const signAccessJWT = (payload: UserEntity) : string => {
+    return jwt.sign(
+        {
+            "UserInfo": {
+                "username": payload.username,
+                "roles": payload.role
+            }
+        },
+        process.env.VAR_USER_ACCESS_TOKEN!,
+        { expiresIn: process.env.VAR_EXPIRE_TIME_ACCESS_TOKEN! }
     );
 }
 
-export const checkJWT = (userToken: string) => {
+export const signRefreshJWT = (payload: UserEntity) : string => {
+    return jwt.sign(
+        {username: payload.username},
+        process.env.VAR_USER_REFRESH_TOKEN!,
+        { expiresIn: process.env.VAR_EXPIRE_TIME_REFRESH_TOKEN! }
+    );
+}
+
+export const checkAccessJWT = async (accessToken: string) => {
     return new Promise((resolve, reject) => {
-        jwtToken.verify(userToken, secret, (err, decoded) => {
+        jwt.verify(accessToken, process.env.VAR_USER_ACCESS_TOKEN!, (err, decoded) => {
             err ? reject(err) : resolve(decoded);
         })
     })
 }
 
-export const refreshJWT = () => {
-    
+export const checkRefreshJWT = async (refreshToken: string) => {
+
+    const checkRefresh: string | jwt.JwtPayload | jwt.VerifyErrors | undefined = new Promise((resolve, reject) => {
+        jwt.verify(refreshToken, process.env.VAR_USER_REFRESH_TOKEN!, (err, decoded) => {
+           err ? reject(err) : resolve(decoded);
+        })
+    })
+    return checkRefresh;
 }
 
-export  const initializeJWT = (clientIds:Array<string>) => {
-    const secret = process.env.SEC_REST_SECRET ?? "";
+export  const initializeTokensToThirdPartners = (clientIds:Array<string>) => {
+    const secret = process.env.VAR_USER_ACCESS_TOKEN!;
     clientIds.forEach(clientId => {
         console.log(JSON.stringify({ 
             user: clientId, 
-            token: jwtToken.sign(
-                { user: clientId },
-                secret,
-                // {expiresIn: expireTime}
+            accessToken: jwt.sign({ user: clientId },
+                secret
             )
         }));
     });

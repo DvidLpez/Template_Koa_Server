@@ -11,5 +11,5 @@ export class ConfigEntity {
     key: string;
 
     @Column()
-    value: string | number;
+    value: string | number | boolean;
 }

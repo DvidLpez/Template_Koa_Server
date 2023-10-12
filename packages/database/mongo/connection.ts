@@ -1,17 +1,13 @@
-import { setEnvironmentVariables } from "../../server/utils";
 import { DataSource } from "typeorm";
 
-setEnvironmentVariables()
-
-export const mongoConnection =  new DataSource({
-    type: "mongodb",
-    authSource: process.env.VAR_SOURCE_MONGO,
-    host: process.env.VAR_HOST_MONGO,
-    port: process.env.VAR_PORT_MONGO ? parseInt(process.env.VAR_PORT_MONGO) : 27017,
-    database: process.env.VAR_DATABASE_MONGO,
-    username: process.env.VAR_USER_MONGO,
-    password: process.env.VAR_PASS_MONGO,
-    useUnifiedTopology: true,
-    cache: false,
-    entities: ["packages/database/mongo/entities/*.ts"]
-})    
+export const initializeDataBase = async (conn: DataSource) => {
+    try {
+        await conn.initialize();
+        console.log("[server]: Connection to mongo has been initialized");
+    } catch (error) {
+        console.error("[server]: Error initializing DataSource", error);
+        setTimeout(() => {
+            initializeDataBase(conn);
+        }, 2000);
+    }
+} 

@@ -1,1 +1,2 @@
-export * from './IConfigKey'
+export * from './IConfigKey';
+export * from './IUser';

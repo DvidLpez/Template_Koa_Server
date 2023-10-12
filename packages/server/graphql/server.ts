@@ -5,7 +5,7 @@ import { readdirSync, readFileSync } from "fs";
 import { join as pathJoin } from "path";
 import AppQueries from "./resolvers/AppQueries";
 import AppMutations from "./resolvers/AppMutations";
-import { checkJWT } from "../utils";
+import { checkAccessJWT } from "../utils";
 
 
 // Fetch all schema definition files
@@ -52,7 +52,7 @@ export const createApolloServer = async(router: any) => {
 
             // try to retrieve a user with the token
             try{
-                let user = await checkJWT(token.split(' ')[1]);
+                let user = await checkAccessJWT(token.split(' ')[1]);
                 console.log(user);
 
             }catch(err: any){

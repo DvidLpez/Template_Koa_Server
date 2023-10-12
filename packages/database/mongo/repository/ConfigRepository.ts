@@ -1,8 +1,10 @@
 import { MongoRepository } from "typeorm";
-import { mongoConnection } from "../connection";
-import { ConfigEntity } from "../entities/ConfigEntity";
+import { ConfigEntity } from "../entities";
+import { mongoConnection } from "../datasource";
+import { IConfigKey } from "../../../core/interfaces";
 
-export default class ConfigRepository {
+export class ConfigRepository {
+
     private repository: MongoRepository<ConfigEntity>;
 
     constructor () {
@@ -31,12 +33,12 @@ export default class ConfigRepository {
     }
 
     /**
-     * Update key value in database
-     * @param {string} keyName
+     * Create or update new key
+     * @param {IConfigKey} configKey
      */
-     public async update(keyName: string, keyValue: string | number) {
-        let found = await this.repository.findOne({where: { key: keyName }})
-        let entity = this.repository.create({key: keyName, value: keyValue});
+     public async update(configKey: IConfigKey) {
+        let found = await this.repository.findOne({where: { key: configKey.name }})
+        let entity = this.repository.create({key: configKey.name, value: configKey.value});
         if (found) {
             entity.id = found.id;
         }

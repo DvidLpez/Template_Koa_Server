@@ -1,3 +1,3 @@
-export * from './utils';
-export * from './mongo/connection'
-export * from './mysql/connection'
+
+export * from './mongo/connection';
+export * from './mongo/datasource';

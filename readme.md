@@ -35,7 +35,7 @@ docker-compose down
   
 ### Start aplication
 ``` bash
-npm run dev
+yarn run dev
 ```
 
 ## :couple: Authors
