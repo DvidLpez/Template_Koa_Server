@@ -1,6 +1,6 @@
 # Template Koa Server
 
-Template to create an API with endpoints REST and GraphQL
+Template to create a Koa API with endpoints REST and GraphQL
 
 ## :dart: Features
 
@@ -8,7 +8,7 @@ Template to create an API with endpoints REST and GraphQL
  - Endpoint GraphQL
  - Connect with other APIS
  - Mongo Database
- - MySQL Database
+ - Docker
 
 ## :computer: Tech Stack
 
@@ -17,6 +17,7 @@ Template to create an API with endpoints REST and GraphQL
  - [Typescript](https://www.typescriptlang.org/)
  - [TypeORM](https://typeorm.io/)
  - [Apollo](https://www.apollographql.com/docs/apollo-server/integrations/middleware/#apollo-server-koa)
+ - [Docker](https://www.docker.com/)
 
 ## :gear: Installation
 - NPM depencencies and devDependencies, see package.json
